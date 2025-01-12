@@ -6,16 +6,15 @@ const PostCard = ({$id, title, featuredImage}) => {
     const [imgUrl, setImgUrl] = useState('');
 
     useEffect(() => {
-        try {
             service.getFilePreview(featuredImage)
             .then(url => {
                 if(url){
                     setImgUrl(url);
                 }
             })
-        } catch (error) {
-            console.log("At PostCard: ", error);
-        }
+            .catch(err => {
+                console.log("At PosrCard: ", err);
+            })
     }, [imgUrl]);
 
     return (

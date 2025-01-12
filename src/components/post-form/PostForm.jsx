@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from 'react-hook-form';
 import { Button, RTE, Input, Select } from '../index'
 import service from '../../appwrite/config';
@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const PostForm = ({ post }) => {
+    const [imgUrl, setImgUrl] = useState('');
+
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
 
@@ -67,6 +69,18 @@ const PostForm = ({ post }) => {
     });
 
     useEffect(() => {
+        if(post){
+            service.getFilePreview(post.featuredImage)
+            .then(url => {
+                if(url){
+                    setImgUrl(url);
+                }
+            })
+            .catch(err => {
+                console.log("At PosrCard: ", err);
+            })
+        }
+
         const subscription = watch((value, { name }) => {
             if(name === 'title'){
                 setValue(
@@ -136,7 +150,7 @@ const PostForm = ({ post }) => {
                     post && (
                         <div className="w-full mb-4">
                             <img
-                            src={service.getFilePreview(post.featuredImage)}
+                            src={imgUrl}
                             alt={post.title}
                             className="rounded-lg" />
                         </div>
